@@ -36,5 +36,21 @@ pipeline {
         )
       }
     }
+    stage('Deploy to Dev') {
+      steps {
+        parallel(
+          "Deploy to Dev": {
+            sh './jenkins/deploy.sh dev'
+            
+          },
+          "Deploy to Staging": {
+            input(message: 'Deploy to staging?', ok: '\'Fire away!\'', id: 'stg')
+            sh './jenkins/deploy.sh staging'
+            sh 'echo Notifying appropriate team members!'
+            
+          }
+        )
+      }
+    }
   }
 }
